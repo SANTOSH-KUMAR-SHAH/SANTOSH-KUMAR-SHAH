@@ -2,8 +2,6 @@
 
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&size=24&pause=1000&color=39FF14&width=500&lines=%F0%9F%8E%A8+I+treat+the+web+like+a+canvas;%F0%9F%8E%AD+And+the+browser+like+a+stage;%E2%9A%A1+Design+first.+Logic+sharp.;%F0%9F%9A%80+Creativity+always+on.)](https://git.io/typing-svg)
 
-Not here to follow the crowd.  
-And definitely not here to document every line of my code.
 
 I build because I feel like building.  
 I design because plain interfaces annoy me.  
@@ -40,10 +38,10 @@ Perfection is overrated. Impact isn’t.
 
 Code shouldn’t just run. It should feel intentional.
 
-Sometimes clean. Sometimes chaotic. Always effective.
+Sometimes clean. Sometimes blundered. Always effective.
 
 I don’t chase trends. I study them — then bend them.  
-If one of my projects looks simple at first glance, look closer. The details are rarely accidental.
+If one of my projects looks simple at first, look closer. The details are rarely accidental.
 
 ## 🧩 What I Actually Do
 
