@@ -1,10 +1,6 @@
 # 👋 Hey, I’m Santosh...
 
-<p align="left">
-  <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=24&pause=1500&color=FFFFFF&center=false&vCenter=false&width=500&lines=🎨+I+treat+the+web+like+a+canvas;🎭+And+the+browser+like+a+stage;⚡+Design+first.+Logic+sharp;🚀+Creativity+always+on" alt="Typing SVG" />
-  </a>
-</p>
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&size=24&pause=1000&color=39FF14&width=500&lines=%F0%9F%8E%A8+I+treat+the+web+like+a+canvas;%F0%9F%8E%AD+And+the+browser+like+a+stage;%E2%9A%A1+Design+first.+Logic+sharp.;%F0%9F%9A%80+Creativity+always+on.)](https://git.io/typing-svg)
 
 Not here to follow the crowd.  
 And definitely not here to document every line of my code.
