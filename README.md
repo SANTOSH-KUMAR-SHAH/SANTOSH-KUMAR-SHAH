@@ -67,9 +67,6 @@ Exploring UX beyond aesthetics.
 
 *Building quietly. Improving loudly.*
 
-<p align="left">
-  <img src="https://github-readme-stats.vercel.app/api?username=SANTOSH-KUMAR-SHAH&show_icons=true&theme=tokyonight&hide_border=true&title_color=FFFFFF&text_color=a9b1d6&icon_color=bb9af7&bg_color=1a1b26" alt="Santosh's Stats" />
-</p>
 
 ---
 
