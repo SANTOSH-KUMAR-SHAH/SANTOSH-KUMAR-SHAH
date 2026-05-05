@@ -27,14 +27,6 @@ I study the unseen architecture behind digital empires. My work is not defined b
 
 ---
 
-### **📈 System Metrics**
-<p align="left">
-  <img src="https://github-readme-stats.vercel.app/api?username=SANTOSH-KUMAR-SHAH&show_icons=true&theme=tokyonight&hide_border=true&bg_color=09090b&count_private=true&title_color=10b981&icon_color=10b981" height="150" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=SANTOSH-KUMAR-SHAH&layout=compact&theme=tokyonight&hide_border=true&bg_color=09090b&title_color=10b981&icon_color=10b981" height="150" />
-</p>
-
----
-
 ### **🚀 Strategic Objectives**
 *   **Developing:** High-authority educational infrastructure (Viswa-Niketan).
 *   **Architecting:** Immersive narrative experiences for the modern web.
