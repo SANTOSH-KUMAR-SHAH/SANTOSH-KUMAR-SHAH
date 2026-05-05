@@ -1,4 +1,4 @@
-# 🏛️ Santosh Kumar Shah
+# Hii I am Santosh
 
 
 <p align="left">
@@ -9,21 +9,10 @@
 
 ---
 
-# 🎬 The Browser is a Stage.
-### **Interactive Storyteller | Visual Poet | Human-Centric Architect**
-
-<p align="left">
-  <img src="https://capsule-render.vercel.app/api?type=soft&color=09090b&height=150&section=header&text=CRAFTING%20CURIOSITY&fontSize=50&fontColor=10b981" />
-</p>
-
-> "I don’t build websites to be used. I build them to be felt. To be read. To be experienced."
-
----
-
 ### **🎭 The Narrative**
-I am obsessed with the space between the user and the screen. While others focus on 'features', I focus on **Curiosity Gaps, Cinematic Dissolves, and the Psychological Flow** of a digital story. 
+I am obsessed with the space between the user and the screen. While others focus on 'features' and creative peoples focus on'Curiosity Gaps', I focus on Both. 
 
-I treat every scroll like a page turn and every animation like a heartbeat. My goal isn't just to make it work—it's to make it **unforgettable.**
+I treat every scroll like a page turn and every animation like a heartbeat. My goal isn't just to make it work—it's to also make it **unforgettable.**
 
 - **Visual Storytelling:** Turning boring data into interactive cinema.
 - **Digital Psychology:** Engineering moments of 'Awe' and 'Certainty'.
@@ -48,27 +37,6 @@ I treat every scroll like a page turn and every animation like a heartbeat. My g
 
 ---
 
-### **🕯️ The Human Element**
-Age **18**. Mind **Evolving**. Curiosity **Fuelled**.  
-I don't follow trends; I study the way they move people, then I build my own path.
-
-🌍 Based in **Kathmandu, Nepal**
-🎭 Watch the Performance: [santoshkumarshah.me](https://santoshkumarshah.me)
-💌 Backstage: [mail@santoshkumarshah.me](mailto:mail@santoshkumarshah.me)
-
----
-
-### **🧠 Final Thought**
-If you came here for standard code, you're in the wrong repo.  
-But if you're here for **ideas that breathe**... **Welcome.**
-
----
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=10b981&height=80&section=footer" />
-</p>
-
-
-
 ### **🕶️ Professional Identity**
 Friends call me a **Polymath**. I call it a **Disciplined Obsession with Systems.**
 
@@ -76,7 +44,13 @@ Friends call me a **Polymath**. I call it a **Disciplined Obsession with Systems
 - 🌐 Explore the Vision: [santoshkumarshah.me](https://santoshkumarshah.me)
 - 📧 Direct Channel: [mail@santoshkumarshah.me](mailto:mail@santoshkumarshah.me)
 
+
+
+### **🧠 Final Thought**
+If you came here for standard code, you're in the wrong repo.  
+But if you're here for **ideas that breathe**... **Welcome.**
 ---
+
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=10b981&height=80&section=footer" />
 </p>
