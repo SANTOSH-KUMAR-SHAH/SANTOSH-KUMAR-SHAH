@@ -1,5 +1,5 @@
 # 🏛️ Santosh Kumar Shah
-### **Architect of Digital Authority & Interactive Systems**
+
 
 <p align="left">
   <img src="https://capsule-render.vercel.app/api?type=rect&color=09090b&height=120&section=header&text=ENGINEERING%20CERTAINTY&fontSize=40&fontColor=10b981" />
@@ -9,30 +9,65 @@
 
 ---
 
-### **🛡️ The Philosophy**
-I study the unseen architecture behind digital empires. My work is not defined by pixels, but by **structural integrity, psychological flow, and technical authority.** Every repository here is a disciplined exercise in turning complex systems into simple, high-trust experiences.
+# 🎬 The Browser is a Stage.
+### **Interactive Storyteller | Visual Poet | Human-Centric Architect**
 
-- **Systems Thinking:** Beyond code—I build for the human behavior that drives the click.
-- **High-Authority UI:** Clean, brutalist, and mathematically precise.
-- **Strategic Implementation:** I build with ownership. If it exists in my repo, it is intended to lead.
+<p align="left">
+  <img src="https://capsule-render.vercel.app/api?type=soft&color=09090b&height=150&section=header&text=CRAFTING%20CURIOSITY&fontSize=50&fontColor=10b981" />
+</p>
+
+> "I don’t build websites to be used. I build them to be felt. To be read. To be experienced."
 
 ---
 
-### **⚙️ The Engine Room (Core Stack)**
+### **🎭 The Narrative**
+I am obsessed with the space between the user and the screen. While others focus on 'features', I focus on **Curiosity Gaps, Cinematic Dissolves, and the Psychological Flow** of a digital story. 
+
+I treat every scroll like a page turn and every animation like a heartbeat. My goal isn't just to make it work—it's to make it **unforgettable.**
+
+- **Visual Storytelling:** Turning boring data into interactive cinema.
+- **Digital Psychology:** Engineering moments of 'Awe' and 'Certainty'.
+- **The Poetry of Pixels:** Because a clean interface is good, but a moving one is better.
+
+---
+
+### **🎨 My Palette (The Toolkit)**
 <p align="left">
-  <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=react,ts,vite,tailwind,threejs,html,css,git&theme=dark" />
-  </a>
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
+  <img src="https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white" />
+  <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white" />
 </p>
 
 ---
 
-### **🚀 Strategic Objectives**
-*   **Developing:** High-authority educational infrastructure (Viswa-Niketan).
-*   **Architecting:** Immersive narrative experiences for the modern web.
-*   **Observing:** The intersection of human psychology and digital systems.
+### **📜 Current Scripts**
+*   **The Narrative:** Building high-end literary experiences for "un-readers."
+*   **The Scene:** Exploring the intersection of **Motion Design** and **User Psychology.**
+*   **The Build:** Silently refining the next award-winning interaction.
 
 ---
+
+### **🕯️ The Human Element**
+Age **18**. Mind **Evolving**. Curiosity **Fuelled**.  
+I don't follow trends; I study the way they move people, then I build my own path.
+
+🌍 Based in **Kathmandu, Nepal**
+🎭 Watch the Performance: [santoshkumarshah.me](https://santoshkumarshah.me)
+💌 Backstage: [mail@santoshkumarshah.me](mailto:mail@santoshkumarshah.me)
+
+---
+
+### **🧠 Final Thought**
+If you came here for standard code, you're in the wrong repo.  
+But if you're here for **ideas that breathe**... **Welcome.**
+
+---
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=10b981&height=80&section=footer" />
+</p>
+
+
 
 ### **🕶️ Professional Identity**
 Friends call me a **Polymath**. I call it a **Disciplined Obsession with Systems.**
