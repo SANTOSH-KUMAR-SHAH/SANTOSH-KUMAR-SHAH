@@ -42,7 +42,7 @@ Friends call me a **Polymath**. I call it a **Disciplined Obsession with Systems
 
 - 📍 Based in **Kathmandu, Nepal**
 - 🌐 Explore the Vision: [santoshkumarshah.me](https://santoshkumarshah.me)
-- 📧 Direct Channel: [mail@santoshkumarshah.me](mailto:mail@santoshkumarshah.me)
+- 📧 Direct Channel: [mail@santoshkumarshah.me](mailto:santoshkumarshah266@gmail.com)
 
 
 
