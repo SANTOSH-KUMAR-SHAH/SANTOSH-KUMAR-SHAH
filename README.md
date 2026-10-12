@@ -1,56 +1,51 @@
-# Hii I am Santosh
-
-
-<p align="left">
-  <img src="https://capsule-render.vercel.app/api?type=rect&color=09090b&height=120&section=header&text=ENGINEERING%20CERTAINTY&fontSize=40&fontColor=10b981" />
-</p>
-
-> "I don’t build interfaces. I design the systems of trust that define how people interact with technology."
-
----
-
-### **🎭 The Narrative**
-I am obsessed with the space between the user and the screen. While others focus on 'features' and creative peoples focus on'Curiosity Gaps', I focus on Both. 
-
-I treat every scroll like a page turn and every animation like a heartbeat. My goal isn't just to make it work—it's to also make it **unforgettable.**
-
-- **Visual Storytelling:** Turning boring data into interactive cinema.
-- **Digital Psychology:** Engineering moments of 'Awe' and 'Certainty'.
-- **The Poetry of Pixels:** Because a clean interface is good, but a moving one is better.
-
----
-
-### **🎨 My Palette (The Toolkit)**
-<p align="left">
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
-  <img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
-  <img src="https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white" />
-  <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white" />
-</p>
-
----
-
-### **📜 Current Scripts**
-*   **The Narrative:** Building high-end literary experiences for "un-readers."
-*   **The Scene:** Exploring the intersection of **Motion Design** and **User Psychology.**
-*   **The Build:** Silently refining the next award-winning interaction.
-
----
-
-### **🕶️ Professional Identity**
-Friends call me a **Polymath**. I call it a **Disciplined Obsession with Systems.**
-
-- 📍 Based in **Kathmandu, Nepal**
-- 🌐 Explore the Vision: [santoshkumarshah.me](https://santoshkumarshah.me)
-- 📧 Direct Channel: [Email](mailto:santoshkumarshah266@gmail.com)
-
-
-
-### **🧠 Final Thought**
-If you came here for standard code, you're in the wrong repo.  
-But if you're here for **ideas that breathe**... **Welcome.**
----
+<!--
+  Animated GitHub profile README — self-contained SVG cards (CSS + SMIL only).
+  GitHub caches README images hard: bump ?v= on an SVG link after editing it.
+  Build order for cache-busting: commit the SVG first, the README second.
+-->
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=10b981&height=80&section=footer" />
+  <img src="./hero.svg?v=9" width="100%" alt="Santosh — animated hero" />
+</p>
+
+<p align="center">
+  <img src="./about-life.svg?v=9" width="100%" alt="What I build and who I am" />
+</p>
+
+<p align="center">
+  <img src="./stack.svg?v=9" width="100%" alt="Tech stack orbit" />
+</p>
+
+<p align="center">
+  <img src="./id-dashboard.svg?v=9" width="100%" alt="ID badge and dashboard" />
+</p>
+
+---
+
+### The work that actually shipped
+
+| Project | What it is |
+|---|---|
+| [**sudhar**](https://github.com/SANTOSH-KUMAR-SHAH/sudhar) | A digital literature experience. The internet hasn't seen this yet. Still being built. |
+| [**URBAN-FASHION**](https://github.com/SANTOSH-KUMAR-SHAH/URBAN-FASHION) | My first real-world problem. Ecommerce, identity, motion — built for HAR Online Store. |
+| [**Sudhar-Lab**](https://github.com/SANTOSH-KUMAR-SHAH/Sudhar-Lab) | Where I break things to understand them. |
+| [**Portfolio**](https://github.com/SANTOSH-KUMAR-SHAH/Portfolio) | My personal presence. Built to feel, not just look. |
+| [**Viswa-Niketan**](https://github.com/SANTOSH-KUMAR-SHAH/Viswa-Niketan) | An institution's first digital home. |
+
+> Quality comes before the words used to describe it.
+
+---
+
+### 🌆 Contribution city (rebuilt daily)
+
+<p align="center">
+  <img src="./profile-3d-contrib/profile-gitblock.svg" width="100%" alt="3D contribution graph" />
+</p>
+
+<p align="center">
+  <img src="./connect.svg?v=9" width="100%" alt="Connect with me" />
+</p>
+
+<p align="center">
+  <sub>अनुगच्छतु प्रवाहं — <em>Follow the Flow.</em><br>One person. One vision. Zero compromise.</sub>
 </p>

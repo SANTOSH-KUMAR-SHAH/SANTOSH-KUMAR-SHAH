@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Santosh Kumar Shah — GitHub Profile Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: #0d1117;
+      padding: 36px 20px 80px;
+      font-size: 16px;
+      color: #e6edf3;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    object {
+      width: 100%; display: block;
+      margin-bottom: 24px; border: none; background: transparent;
+      transition: opacity 0.4s ease;
+    }
+    /* placeholder box before card enters scroll view */
+    object[data-src] {
+      background: #0d0e16;
+      border-radius: 18px;
+      border: 1px solid rgba(34,211,238,0.08);
+      opacity: 0.6;
+    }
+    object.loaded {
+      opacity: 1;
+    }
+    hr { border: 0; border-top: 1px solid #21262d; margin: 28px 0 24px; }
+    h3 {
+      color: #e6edf3;
+      font-family: 'Syne', system-ui, sans-serif;
+      font-size: 22px; font-weight: 800;
+      margin: 0 0 16px; letter-spacing: -0.2px;
+    }
+    table {
+      border-collapse: collapse; width: 100%;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: #e6edf3; font-size: 14px; margin-bottom: 24px;
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid #30363d;
+    }
+    th, td { border: 1px solid #30363d; padding: 12px 16px; text-align: left; }
+    th { background: #161b22; font-weight: 700; font-family: 'Space Mono', monospace; font-size: 13px; color: #22d3ee; }
+    td a { color: #22d3ee; text-decoration: none; font-weight: 600; }
+    td a:hover { text-decoration: underline; }
+    .note {
+      color: #8b90a8;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px; margin-bottom: 28px; line-height: 1.8;
+      background: rgba(34,211,238,0.04);
+      padding: 12px 16px; border-radius: 8px; border-left: 3px solid #22d3ee;
+    }
+    blockquote {
+      color: #cbd5e1;
+      font-family: 'Syne', system-ui, sans-serif;
+      font-size: 18px; font-weight: 700;
+      border-left: 3px solid #a78bfa;
+      padding: 6px 0 6px 18px; margin: 0 0 28px;
+      letter-spacing: -0.3px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="note">
+    <strong>LOCAL PREVIEW — TRUE SCROLL-TRIGGERED REVEAL</strong><br/>
+    Scroll down the page. Each card's entrance animation triggers at the exact moment it enters your viewport, playing in full fidelity with embedded typography (<strong>Syne 800</strong> + <strong>Plus Jakarta Sans</strong> + <strong>Space Mono</strong>).
+  </div>
+
+  <!-- Hero loads immediately — above the fold -->
+  <object type="image/svg+xml" data="hero.svg?v=9" class="loaded" style="aspect-ratio:900/430"></object>
+
+  <!--
+    Remaining cards use data-src (no data attribute yet).
+    IntersectionObserver sets data= when the card scrolls into view,
+    causing the SVG to load at that instant so SMIL animations fire from t=0.
+  -->
+  <object type="image/svg+xml"
+          data-src="about-life.svg?v=9"
+          style="aspect-ratio:900/430;min-height:430px"></object>
+
+  <object type="image/svg+xml"
+          data-src="stack.svg?v=9"
+          style="aspect-ratio:900/470;min-height:470px"></object>
+
+  <object type="image/svg+xml"
+          data-src="id-dashboard.svg?v=9"
+          style="aspect-ratio:900/470;min-height:470px"></object>
+
+  <hr/>
+  <h3>The work that actually shipped</h3>
+  <table>
+    <tr><th>PROJECT</th><th>WHAT IT IS</th></tr>
+    <tr>
+      <td><a href="https://github.com/SANTOSH-KUMAR-SHAH/sudhar" target="_blank">sudhar</a></td>
+      <td>A digital literature experience. The internet hasn't seen this yet. Still being built.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/SANTOSH-KUMAR-SHAH/URBAN-FASHION" target="_blank">URBAN-FASHION</a></td>
+      <td>My first real-world problem. Ecommerce, identity, motion — built for HAR Online Store.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/SANTOSH-KUMAR-SHAH/Sudhar-Lab" target="_blank">Sudhar-Lab</a></td>
+      <td>Where I break things to understand them.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/SANTOSH-KUMAR-SHAH/Portfolio" target="_blank">Portfolio</a></td>
+      <td>My personal presence. Built to feel, not just look.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/SANTOSH-KUMAR-SHAH/Viswa-Niketan" target="_blank">Viswa-Niketan</a></td>
+      <td>An institution's first digital home.</td>
+    </tr>
+  </table>
+  <blockquote>"Quality comes before the words used to describe it."</blockquote>
+
+  <object type="image/svg+xml"
+          data-src="connect.svg?v=9"
+          style="aspect-ratio:900/360;min-height:360px"></object>
+
+</div>
+
+<script>
+/**
+ * Scroll-reveal: set data= on <object> when it enters the viewport.
+ * The SVG loads at that exact moment, so its SMIL timeline starts from t=0.
+ * Result: entrance animations play as a true scroll-triggered reveal.
+ */
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (!entry.isIntersecting) return;
+    var el = entry.target;
+    var src = el.getAttribute('data-src');
+    if (src) {
+      el.setAttribute('data', src);
+      el.removeAttribute('data-src');
+      el.classList.add('loaded');
+      el.style.background = 'transparent';
+      el.style.borderColor = 'transparent';
+    }
+    observer.unobserve(el);
+  });
+}, {
+  threshold: 0.08,
+  rootMargin: '0px 0px -40px 0px'
+});
+
+document.querySelectorAll('object[data-src]').forEach(function(el) {
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
