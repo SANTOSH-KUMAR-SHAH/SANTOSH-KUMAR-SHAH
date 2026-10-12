@@ -5,19 +5,19 @@
 -->
 
 <p align="center">
-  <img src="./hero.svg?v=11" width="100%" alt="Santosh — animated hero" />
+  <img src="./hero.svg?v=12" width="100%" alt="Santosh — animated hero" />
 </p>
 
 <p align="center">
-  <img src="./about-life.svg?v=11" width="100%" loading="lazy" alt="What I build and who I am" />
+  <img src="./about-life.svg?v=12" width="100%" loading="lazy" alt="What I build and who I am" />
 </p>
 
 <p align="center">
-  <img src="./stack.svg?v=11" width="100%" loading="lazy" alt="Tech stack orbit" />
+  <img src="./stack.svg?v=12" width="100%" loading="lazy" alt="Tech stack orbit" />
 </p>
 
 <p align="center">
-  <img src="./id-dashboard.svg?v=11" width="100%" loading="lazy" alt="ID badge and dashboard" />
+  <img src="./id-dashboard.svg?v=12" width="100%" loading="lazy" alt="ID badge and dashboard" />
 </p>
 
 ---
@@ -43,7 +43,7 @@
 </p>
 
 <p align="center">
-  <img src="./connect.svg?v=11" width="100%" loading="lazy" alt="Connect with me" />
+  <img src="./connect.svg?v=12" width="100%" loading="lazy" alt="Connect with me" />
 </p>
 
 <p align="center">

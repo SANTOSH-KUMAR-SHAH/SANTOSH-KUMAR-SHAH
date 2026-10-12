@@ -131,15 +131,14 @@ core = f'''
 # ---- chip grid -------------------------------------------------------------
 groups = [
     ("FRONTEND", ["react", "nextdotjs", "typescript", "tailwindcss"]),
-   ("MOTION &amp; 3D", ["framer", "greensock", "threedotjs"]),
-    ("DATA", ["nodedotjs", "postgresql", "firebase"]),
-    ("AI", ["openai", "pytorch", "tensorflow"]),
+    ("MOTION &amp; 3D", ["framer", "greensock", "threedotjs"]),
+    ("BACKEND &amp; DATA", ["nodedotjs", "postgresql", "mongodb", "firebase"]),
+    ("DEV &amp; DEPLOY", ["git", "vercel"]),
 ]
 labels = {"react": "React", "nextdotjs": "Next.js", "typescript": "TypeScript",
           "tailwindcss": "Tailwind", "framer": "Framer", "greensock": "GSAP",
           "threedotjs": "Three.js", "nodedotjs": "Node.js", "postgresql": "Postgres",
-          "firebase": "Firebase", "openai": "OpenAI", "pytorch": "PyTorch",
-          "tensorflow": "TensorFlow"}
+          "firebase": "Firebase", "mongodb": "MongoDB", "git": "Git", "vercel": "Vercel"}
 
 GX = 450
 GY = 66

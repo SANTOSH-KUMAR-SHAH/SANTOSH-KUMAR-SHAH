@@ -46,9 +46,10 @@ LOCATION = "Kathmandu, Nepal"
 TAGS     = ["React", "TypeScript", "Next.js", "Astro", "GSAP"]
 
 # ---- geometry
-W, H   = 900, 430
-VW, VH = 358, 202   # 16:9 right panel
-VX, VY = 510, 108   # top-right origin
+W, H   = 900, 440
+VW, VH = 416, 234   # 16:9 cinematic video (Native 480x270 scaled with LANCZOS)
+VX, VY = 458, 103   # centered vertically in right panel
+SEP_X  = 444        # vertical separator between left text and right video
 
 LOOP = 5.0
 
@@ -70,8 +71,8 @@ dur_ms = int(LOOP * 1000 / len(selected))   # 5000ms / 29 frames = ~172ms per fr
 gif_imgs[0].save(
     GIF_PATH, format="GIF", save_all=True,
     append_images=gif_imgs[1:],
-    duration=dur_ms, loop=0, optimize=True
-)
+    duration=dur_ms, optimize=True
+)  # Omit loop parameter so it plays 1 time on open, then holds final frame!
 print(f"built GIF: {len(selected)} frames, {dur_ms}ms each -> {os.path.getsize(GIF_PATH)//1024}KB")
 
 with open(GIF_PATH, "rb") as fh:
@@ -119,23 +120,23 @@ roles_svg = "\n      ".join(role_parts)
 # ====== TECH TAG CHIPS ========================================================
 TAG_COLS = [CYAN, VIOLET, PINK, CYAN, VIOLET]
 tag_parts = []
-tx = 48
+tx = 44
 for i, tag in enumerate(TAGS):
     col = TAG_COLS[i]
-    tw = int(20 + len(tag) * 8.8)
+    tw = int(16 + len(tag) * 8.0)
     delay = i * 0.45
     tag_parts.append(
-        f'<g transform="translate({tx},332)">'
+        f'<g transform="translate({tx},338)">'
         f'<rect width="{tw}" height="26" rx="13" fill="{col}" fill-opacity="0.10" '
         f'stroke="{col}" stroke-width="1.2">'
         f'<animate attributeName="stroke-opacity" values="0.35;1.0;0.35" '
         f'dur="{3.0 + i * 0.4:.1f}s" begin="{delay:.2f}s" repeatCount="indefinite" fill="both"/>'
         f'</rect>'
         f'<text x="{tw//2}" y="17" text-anchor="middle" class="sans" '
-        f'font-size="12" fill="{col}" font-weight="700">{tag}</text>'
+        f'font-size="12" fill="{col}" font-weight="600">{tag}</text>'
         f'</g>'
     )
-    tx += tw + 10
+    tx += tw + 8
 tags_svg = "\n    ".join(tag_parts)
 
 # ====== TWINKLING PARTICLES ===================================================
@@ -196,18 +197,6 @@ glitch_svg = f"""
     </g>
   </g>"""
 
-# ====== SCAN LINE ACROSS VIDEO ================================================
-# A thin bright horizontal rect that sweeps top→bottom of the video, looping.
-scan_svg = (
-    f'<rect x="{VX}" y="{VY}" width="{VW}" height="2.5" '
-    f'fill="{CYAN}" clip-path="url(#vclip)" opacity="0">'
-    f'<animate attributeName="y" values="{VY};{VY+VH}" dur="2.2s" begin="0s" '
-    f'repeatCount="indefinite" calcMode="spline" keySplines="0.42 0 0.58 1"/>'
-    f'<animate attributeName="opacity" values="0;0.35;0.35;0" '
-    f'keyTimes="0;0.05;0.85;1" dur="2.2s" begin="0s" repeatCount="indefinite"/>'
-    f'</rect>'
-)
-
 # ====== FULL-CARD LIGHT BEAM ==================================================
 # A wide soft beam that sweeps left→right across the entire card at t=0.8s,
 # then again at t=10s, t=20s. Creates a cinematic shutter/lens-flare feel.
@@ -256,10 +245,9 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
       <circle cx="1.5" cy="1.5" r="1" fill="#ffffff" opacity="0.028"/>
     </pattern>
 
-    <!-- video edge fade masks -->
-    <!-- clip for video box and scan line (keeps it inside rounded video box) -->
+    <!-- clip for video box (soft rounded corners) -->
     <clipPath id="vclip">
-      <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" rx="10"/>
+      <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" rx="14"/>
     </clipPath>
 
     <!-- name reveal: black cover rect shrinks upward -->
@@ -338,7 +326,7 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
           fill="url(#nameGrad)" letter-spacing="2">{NAME}</text>
   </g>
   <!-- name reveal: one-shot heartbeat pulse (cyan flash right after mask opens) -->
-  <rect x="46" y="144" width="420" height="80" fill="{CYAN}" rx="4" opacity="0">
+  <rect x="42" y="144" width="380" height="80" fill="{CYAN}" rx="4" opacity="0">
     <animate attributeName="opacity" values="0;0.10;0" keyTimes="0;0.5;1"
              dur="0.55s" begin="1.35s" fill="freeze"/>
   </rect>
@@ -376,62 +364,30 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
   </g>
 
   <!-- vertical separator -->
-  <line x1="490" y1="36" x2="490" y2="{H-36}" stroke="url(#hairline)"
+  <line x1="{SEP_X}" y1="36" x2="{SEP_X}" y2="{H-36}" stroke="url(#hairline)"
         stroke-width="1" opacity="0.2"/>
 
-  <!-- ===== RIGHT COLUMN: VIDEO VIEWFINDER ===== -->
-  <!-- Animated GIF: loops automatically, GitHub renders these correctly in SVG -->
+  <!-- ===== RIGHT COLUMN: CINEMATIC SHOWCASE ===== -->
+  <!-- Ambient glow behind video box -->
+  <radialGradient id="vGlow" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="{CYAN}" stop-opacity="0.22"/>
+    <stop offset="0.6" stop-color="{VIOLET}" stop-opacity="0.08"/>
+    <stop offset="1" stop-color="{BG}" stop-opacity="0"/>
+  </radialGradient>
+  <ellipse cx="{VX + VW//2}" cy="{VY + VH//2}" rx="{VW//2 + 35}" ry="{VH//2 + 30}" fill="url(#vGlow)"/>
+
+  <!-- Video frame card with sleek rounded border -->
+  <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" rx="14"
+        fill="{DARK}" stroke="url(#hairline)" stroke-width="1.6" stroke-opacity="0.6"/>
+
+  <!-- Animated video (plays 1 time on load, then holds final portrait frame) -->
   <g clip-path="url(#vclip)">
     {gif_svg}
   </g>
 
-  <!-- scan line -->
-  {scan_svg}
-
-  <!-- corner brackets (draw-in animation) -->
-  <g stroke="{CYAN}" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.9">
-    <path d="M{VX} {VY+24} V{VY} H{VX+24}" stroke-dasharray="48" stroke-dashoffset="0">
-      <animate attributeName="stroke-dashoffset" values="48;0" dur="0.65s" begin="0.1s" fill="both"/>
-    </path>
-    <path d="M{VX+VW-24} {VY} H{VX+VW} V{VY+24}" stroke-dasharray="48" stroke-dashoffset="0">
-      <animate attributeName="stroke-dashoffset" values="48;0" dur="0.65s" begin="0.2s" fill="both"/>
-    </path>
-    <path d="M{VX+VW} {VY+VH-24} V{VY+VH} H{VX+VW-24}" stroke-dasharray="48" stroke-dashoffset="0">
-      <animate attributeName="stroke-dashoffset" values="48;0" dur="0.65s" begin="0.3s" fill="both"/>
-    </path>
-    <path d="M{VX+24} {VY+VH} H{VX} V{VY+VH-24}" stroke-dasharray="48" stroke-dashoffset="0">
-      <animate attributeName="stroke-dashoffset" values="48;0" dur="0.65s" begin="0.4s" fill="both"/>
-    </path>
-  </g>
-
-  <!-- REC indicator -->
-  <g class="mono" font-size="12" fill="{TEXT}">
-    <circle cx="{VX+14}" cy="{VY-15}" r="5" fill="{PINK}">
-      <animate attributeName="opacity" values="1;0;1" dur="1.1s" repeatCount="indefinite"/>
-    </circle>
-    <text x="{VX+26}" y="{VY-11}" letter-spacing="1">REC</text>
-    <text x="{VX+VW}" y="{VY-11}" text-anchor="end" fill="{MUTED}">santosh.mp4</text>
-  </g>
-
-  <!-- scrubber (synced to 5s loop) -->
-  <g>
-    <rect x="{VX}" y="{VY+VH+10}" width="{VW}" height="3" rx="1.5"
-          fill="#ffffff" opacity="0.10"/>
-    <rect x="{VX}" y="{VY+VH+10}" width="0" height="3" rx="1.5"
-          fill="url(#nameGrad)">
-      <animate attributeName="width" values="0;{VW}" dur="{LOOP}s"
-               begin="0s" repeatCount="indefinite"/>
-    </rect>
-    <circle cx="{VX}" cy="{VY+VH+11.5}" r="5" fill="{CYAN}">
-      <animate attributeName="cx" values="{VX};{VX+VW}" dur="{LOOP}s"
-               begin="0s" repeatCount="indefinite"/>
-    </circle>
-  </g>
-
-  <!-- timestamp -->
-  <text x="{VX}" y="{VY+VH+30}" class="mono" font-size="11" fill="{MUTED}">00:00</text>
-  <text x="{VX+VW}" y="{VY+VH+30}" class="mono" font-size="11" fill="{MUTED}"
-        text-anchor="end">00:05</text>
+  <!-- Elegant subtle glass sheen over video border -->
+  <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" rx="14"
+        fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1"/>
 
 </svg>
 '''
