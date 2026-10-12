@@ -52,6 +52,9 @@ links = [
     ("whatsapp", "WhatsApp", "+977 9845067005", "https://wa.me/9779845067005"),
 ]
 
+# Stagger offset so all 5 cards don't animate simultaneously on GitHub.
+CARD_DELAY = 3.2  # seconds
+
 CX0, CY0, CW, CH = 330, 88, 540, 44
 CARD_DUR = 1.5  # total span covering all 5 card fades
 cards = []
@@ -73,10 +76,10 @@ for i, (ic, name, sub, url) in enumerate(links):
         f'<a href="{url}" target="_blank">'
         # outer g: static position — no animation
         f'<g transform="translate({CX0},{y})">'
-        # inner g: slide + fade with begin=0s and keyTimes
+        # inner g: slide + fade with begin=CARD_DELAY and keyTimes
         f'<g opacity="0">'
-        f'<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;{k0};{k1};1" dur="{CARD_DUR}s" begin="0s" fill="freeze"/>'
-        f'<animateTransform attributeName="transform" type="translate" values="14 0;14 0;0 0;0 0" keyTimes="0;{k0};{k1};1" dur="{CARD_DUR}s" begin="0s" fill="freeze"/>'
+        f'<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;{k0};{k1};1" dur="{CARD_DUR}s" begin="{CARD_DELAY}s" fill="freeze"/>'
+        f'<animateTransform attributeName="transform" type="translate" values="14 0;14 0;0 0;0 0" keyTimes="0;{k0};{k1};1" dur="{CARD_DUR}s" begin="{CARD_DELAY}s" fill="freeze"/>'
         f'<rect x="0" y="0" width="{CW}" height="{CH}" rx="12" fill="#12141f" '
         f'stroke="{accent}" stroke-opacity="0.35" stroke-width="1.3">'
         f'<animate attributeName="stroke-opacity" values="0.35;0.75;0.35" dur="3s" begin="{t1}s" repeatCount="indefinite"/>'

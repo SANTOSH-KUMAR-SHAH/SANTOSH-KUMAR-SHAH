@@ -15,6 +15,9 @@ repos_path = os.path.join(HERE, "assets", "repos.json") if os.path.exists(os.pat
 REPOS = json.load(open(repos_path))
 OUT = os.path.join(HERE, "id-dashboard.svg")
 
+# Stagger offset so all 5 cards don't animate simultaneously on GitHub.
+CARD_DELAY = 2.4  # seconds
+
 BG, CYAN, VIOLET, PINK, TEXT, MUTED = "#0d0e16", "#22d3ee", "#a78bfa", "#f472b6", "#e7e9f3", "#8b90a8"
 W, H = 900, 470
 
@@ -49,7 +52,7 @@ def kpi(x, y, val, label, color):
             f'<clipPath id="kclip_{label[0]}{x}"><rect x="{x+14}" y="{y+22}" width="112" height="{rh}"/></clipPath>'
             f'<g clip-path="url(#kclip_{label[0]}{x})"><g transform="translate(0,{val*rh})">'
             f'<animateTransform attributeName="transform" type="translate" '
-            f'values="0,0;0,0;0,{val*rh}" keyTimes="0;0.25;1" dur="1.6s" begin="0s" '
+            f'values="0,0;0,0;0,{val*rh}" keyTimes="0;0.25;1" dur="1.6s" begin="{CARD_DELAY}s" '
             f'calcMode="spline" keySplines="0.16 1 0.3 1;0.16 1 0.3 1" fill="freeze"/>{rows}</g></g>')
     return (f'<g><rect x="{x}" y="{y}" width="140" height="80" rx="14" fill="#12141f" '
             f'stroke="{color}" stroke-opacity="0.35" stroke-width="1.3"/>'
@@ -73,9 +76,9 @@ for i, (name, v) in enumerate(chart):
     overshoot = hgt * 1.08
     bars.append(
         f'<rect x="{x:.1f}" y="{by - hgt:.1f}" width="{bar_w}" height="{hgt:.1f}" rx="6" fill="{CYAN}" fill-opacity="0.85">'
-        f'<animate attributeName="height" values="0;0;{overshoot:.1f};{hgt:.1f}" keyTimes="0;0.2;0.8;1" dur="1.3s" begin="0s" fill="both" '
+        f'<animate attributeName="height" values="0;0;{overshoot:.1f};{hgt:.1f}" keyTimes="0;0.2;0.8;1" dur="1.3s" begin="{CARD_DELAY}s" fill="both" '
         f'calcMode="spline" keySplines="0.5 0 0.5 1;0.16 1 0.3 1;0.5 0 0.5 1"/>'
-        f'<animate attributeName="y" values="{by};{by};{by-overshoot:.1f};{by-hgt:.1f}" keyTimes="0;0.2;0.8;1" dur="1.3s" begin="0s" fill="both" '
+        f'<animate attributeName="y" values="{by};{by};{by-overshoot:.1f};{by-hgt:.1f}" keyTimes="0;0.2;0.8;1" dur="1.3s" begin="{CARD_DELAY}s" fill="both" '
         f'calcMode="spline" keySplines="0.5 0 0.5 1;0.16 1 0.3 1;0.5 0 0.5 1"/></rect>'
         f'<text x="{x+bar_w/2:.1f}" y="{by-hgt-8:.1f}" text-anchor="middle" class="display" font-size="13" fill="{TEXT}">{v}</text>'
         f'<text x="{x+bar_w/2:.1f}" y="{by+18}" text-anchor="middle" class="mono" font-size="11" fill="{MUTED}">{name}</text>')
@@ -94,16 +97,16 @@ barcode = "".join(
 badge = f'''
   <g>
     <animateTransform attributeName="transform" type="translate" values="0,-60;0,0"
-      dur="0.9s" begin="0s" fill="both" calcMode="spline" keySplines="0.16 1 0.3 1"/>
+      dur="0.9s" begin="{CARD_DELAY}s" fill="both" calcMode="spline" keySplines="0.16 1 0.3 1"/>
     <g>
       <animateTransform attributeName="transform" type="rotate" additive="sum"
         values="-9 200 34; 7 200 34; -5 200 34; 3.5 200 34; -2 200 34; 1 200 34; 0 200 34"
-        keyTimes="0;0.18;0.38;0.56;0.74;0.88;1" dur="5s" begin="0.9s" repeatCount="indefinite" fill="both"/>
+        keyTimes="0;0.18;0.38;0.56;0.74;0.88;1" dur="5s" begin="{CARD_DELAY + 0.9}s" repeatCount="indefinite" fill="both"/>
       <!-- lanyard straps with subtle sway matching the badge swing -->
       <path d="M200 34 L150 96 M200 34 L250 96" stroke="{VIOLET}" stroke-width="3" fill="none" opacity="0.7">
         <animateTransform attributeName="transform" type="rotate" additive="sum"
           values="-4 200 34; 3 200 34; -2 200 34; 1 200 34; 0 200 34"
-          keyTimes="0;0.25;0.55;0.8;1" dur="5s" begin="0.9s" repeatCount="indefinite" fill="both"/>
+          keyTimes="0;0.25;0.55;0.8;1" dur="5s" begin="{CARD_DELAY + 0.9}s" repeatCount="indefinite" fill="both"/>
       </path>
       <circle cx="200" cy="34" r="6" fill="none" stroke="{CYAN}" stroke-width="2.5"/>
       <rect x="186" y="86" width="28" height="16" rx="4" fill="#c9cedb" stroke="#8b90a8"/>

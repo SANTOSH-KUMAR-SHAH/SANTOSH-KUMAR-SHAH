@@ -12,6 +12,10 @@ from fonts_def import FONTS_STYLE_ESCAPED
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT  = os.path.join(HERE, "about-life.svg")
 
+# Stagger offset: GitHub renders all SVGs simultaneously.
+# Each card gets a unique delay so they don't all animate at once.
+CARD_DELAY = 0.8  # seconds
+
 BG, CYAN, VIOLET, PINK, TEXT, MUTED = "#0d0e16","#22d3ee","#a78bfa","#f472b6","#e7e9f3","#8b90a8"
 W, H = 900, 430
 
@@ -45,8 +49,8 @@ for i, (title, sub, col, glyph) in enumerate(rows):
     row_svg.append(
         f'<g transform="translate(52,{y})">'
         f'<g opacity="0">'
-        f'<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;{k0};{k1};1" dur="{FADE_DUR}s" begin="0s" fill="freeze"/>'
-        f'<animateTransform attributeName="transform" type="translate" values="0 14;0 14;0 0;0 0" keyTimes="0;{k0};{k1};1" dur="{FADE_DUR}s" begin="0s" fill="freeze"/>'
+        f'<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;{k0};{k1};1" dur="{FADE_DUR}s" begin="{CARD_DELAY}s" fill="freeze"/>'
+        f'<animateTransform attributeName="transform" type="translate" values="0 14;0 14;0 0;0 0" keyTimes="0;{k0};{k1};1" dur="{FADE_DUR}s" begin="{CARD_DELAY}s" fill="freeze"/>'
         f'<rect x="0" y="-22" width="44" height="44" rx="12" fill="{col}" fill-opacity="0.10" stroke="{col}" stroke-opacity="0.4">'
         f'<animate attributeName="stroke-opacity" values="0.4;0.85;0.4" dur="3.2s" begin="{t1}s" repeatCount="indefinite"/>'
         f'</rect>'
@@ -186,7 +190,7 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
 
     <!-- rule that draws in left→right -->
     <line x1="46" y1="132" x2="46" y2="132" stroke="url(#hobbyGrad)" stroke-width="1.5" opacity="0.5">
-      <animate attributeName="x2" values="46;404" dur="0.8s" begin="0s" fill="freeze"
+    <animate attributeName="x2" values="46;404" dur="0.8s" begin="{CARD_DELAY}s" fill="freeze"
                calcMode="spline" keySplines="0.16 1 0.3 1"/>
     </line>
 
@@ -207,7 +211,7 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
 
     <!-- rule draws in -->
     <line x1="490" y1="78" x2="490" y2="78" stroke="url(#hobbyGrad)" stroke-width="1.5" opacity="0.5">
-      <animate attributeName="x2" values="490;844" dur="0.8s" begin="0s" fill="freeze"
+      <animate attributeName="x2" values="490;844" dur="0.8s" begin="{CARD_DELAY}s" fill="freeze"
                calcMode="spline" keySplines="0.16 1 0.3 1"/>
     </line>
 

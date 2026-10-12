@@ -15,6 +15,9 @@ icons_path = os.path.join(HERE, "assets", "icons.json") if os.path.exists(os.pat
 ICONS = json.load(open(icons_path))
 OUT = os.path.join(HERE, "stack.svg")
 
+# Stagger offset so all 5 cards don't animate simultaneously on GitHub.
+CARD_DELAY = 1.6  # seconds
+
 BG, CYAN, VIOLET, PINK, TEXT, MUTED = "#0d0e16", "#22d3ee", "#a78bfa", "#f472b6", "#e7e9f3", "#8b90a8"
 W, H = 900, 470
 CX, CY = 250, 240
@@ -159,8 +162,8 @@ for gi, (gname, slugs) in enumerate(groups):
         chips.append(
             f'<g transform="translate({cx},{gy+14})">'
             f'<g opacity="0">'
-            f'<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;{k0};{k1};1" dur="{CHIP_DUR}s" begin="0s" fill="freeze"/>'
-            f'<animateTransform attributeName="transform" type="translate" values="10 0;10 0;0 0;0 0" keyTimes="0;{k0};{k1};1" dur="{CHIP_DUR}s" begin="0s" fill="freeze"/>'
+            f'<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;{k0};{k1};1" dur="{CHIP_DUR}s" begin="{CARD_DELAY}s" fill="freeze"/>'
+            f'<animateTransform attributeName="transform" type="translate" values="10 0;10 0;0 0;0 0" keyTimes="0;{k0};{k1};1" dur="{CHIP_DUR}s" begin="{CARD_DELAY}s" fill="freeze"/>'
             f'<rect width="{wch}" height="34" rx="17" fill="#12141f" stroke="{accent}" stroke-width="1.4" stroke-opacity="0.35">'
             f'<animate attributeName="stroke-opacity" values="0.35;0.75;0.35" dur="3.5s" begin="{t1}s" repeatCount="indefinite"/>'
             f'</rect>'
@@ -200,7 +203,7 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
 
   <!-- orbit fades in on load -->
   <g opacity="0">
-    <animate attributeName="opacity" values="0;1" dur="1.2s" begin="0s" fill="freeze"
+    <animate attributeName="opacity" values="0;1" dur="1.2s" begin="{CARD_DELAY}s" fill="freeze"
              calcMode="spline" keySplines="0.25 0 0.75 1"/>
     <g>{orbit_groups}</g>
     <g>{core}</g>

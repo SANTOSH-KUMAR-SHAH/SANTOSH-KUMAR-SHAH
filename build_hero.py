@@ -20,10 +20,12 @@ import base64
 import glob
 import os
 import random
+from PIL import Image
 from fonts_def import FONTS_STYLE_ESCAPED
 
 HERE      = os.path.dirname(os.path.abspath(__file__))
 FRAME_DIR = os.path.join(HERE, "assets", "frames") if os.path.exists(os.path.join(HERE, "assets", "frames")) else os.path.join(HERE, "profile", "assets", "frames")
+GIF_PATH  = os.path.join(HERE, "hero_loop.gif")
 OUT       = os.path.join(HERE, "hero.svg")
 
 # ---- theme
@@ -48,55 +50,69 @@ W, H   = 900, 430
 VW, VH = 358, 202   # 16:9 right panel
 VX, VY = 510, 108   # top-right origin
 
-# ---- load & encode frames
+LOOP = 5.0
+
+# ---- Build animated GIF from all 29 frames (GitHub renders animated GIFs in SVG <image> tags)
+# This replaces the broken discrete-opacity SMIL stack which GitHub Camo strips.
 frames = sorted(glob.glob(os.path.join(FRAME_DIR, "h_*.jpg")))
 if not frames:
     raise SystemExit("No frames found in assets/frames/ — run ffmpeg extract first.")
-frames = frames[1:]          # skip frame 1 so loop opens on frame 2
-N    = len(frames)
-LOOP = 5.0
-b64  = []
-for f in frames:
-    with open(f, "rb") as fh:
-        b64.append(base64.b64encode(fh.read()).decode("ascii"))
+frames = frames[1:]  # skip frame 1 -> gives exactly 29 frames (h_002 to h_030)
+N = len(frames)
+selected = frames    # use all 29 frames for smooth cinema video
+gif_imgs = []
+for f in selected:
+    img = Image.open(f).convert("RGB")
+    img = img.resize((VW, VH), Image.LANCZOS)
+    gif_imgs.append(img.quantize(colors=96, method=Image.Quantize.MEDIANCUT, dither=1))
+
+dur_ms = int(LOOP * 1000 / len(selected))   # 5000ms / 29 frames = ~172ms per frame
+gif_imgs[0].save(
+    GIF_PATH, format="GIF", save_all=True,
+    append_images=gif_imgs[1:],
+    duration=dur_ms, loop=0, optimize=True
+)
+print(f"built GIF: {len(selected)} frames, {dur_ms}ms each -> {os.path.getsize(GIF_PATH)//1024}KB")
+
+with open(GIF_PATH, "rb") as fh:
+    gif_b64 = base64.b64encode(fh.read()).decode("ascii")
 
 
-def discrete(idx, total):
-    v = ["0"] * total
-    v[idx] = "1"
-    return ",".join(v)
-
-
-# ====== ANIMATED FRAME STACK =================================================
-img_parts = []
-for i, data in enumerate(b64):
-    img_parts.append(
-        f'<image x="{VX}" y="{VY}" width="{VW}" height="{VH}" '
-        f'href="data:image/jpeg;base64,{data}" opacity="0" '
-        f'preserveAspectRatio="xMidYMid slice">'
-        f'<animate attributeName="opacity" calcMode="discrete" '
-        f'values="{discrete(i, N)}" dur="{LOOP}s" begin="0s" '
-        f'repeatCount="indefinite" fill="both"/></image>'
-    )
-frames_svg = "\n      ".join(img_parts)
-
-# static fallback = final frame, always visible underneath animations
-fallback_svg = (
+# ====== ANIMATED GIF (single <image> — GitHub renders animated GIFs natively) ===
+# Uses both href and xlink:href for universal SVG engine compatibility
+gif_svg = (
     f'<image x="{VX}" y="{VY}" width="{VW}" height="{VH}" '
-    f'href="data:image/jpeg;base64,{b64[-1]}" opacity="1" '
+    f'href="data:image/gif;base64,{gif_b64}" xlink:href="data:image/gif;base64,{gif_b64}" '
     f'preserveAspectRatio="xMidYMid slice"/>'
 )
 
-# ====== CYCLING ROLES =========================================================
+# ====== CYCLING ROLES (smooth crossfade with keyTimes, no calcMode="discrete") ==
 ROLE_CYCLE = 8.0
+def make_role_anim(j, total_roles, total_dur):
+    slot = total_dur / total_roles
+    fade = 0.35
+    s = j * slot
+    e = (j + 1) * slot
+    if j == 0:
+        times = [0.0, (slot - fade) / total_dur, slot / total_dur, (total_dur - fade) / total_dur, 1.0]
+        vals = [1.0, 1.0, 0.0, 0.0, 1.0]
+    elif j == total_roles - 1:
+        times = [0.0, s / total_dur, (s + fade) / total_dur, (total_dur - fade) / total_dur, 1.0]
+        vals = [0.0, 0.0, 1.0, 1.0, 0.0]
+    else:
+        times = [0.0, s / total_dur, (s + fade) / total_dur, (e - fade) / total_dur, e / total_dur, 1.0]
+        vals = [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+    kt = ";".join(f"{t:.3f}" for t in times)
+    kv = ";".join(f"{v:.1f}" for v in vals)
+    return kt, kv
+
 role_parts = []
 for j, role in enumerate(ROLES):
-    op0 = "1" if j == 0 else "0"
+    kt, kv = make_role_anim(j, len(ROLES), ROLE_CYCLE)
     role_parts.append(
-        f'<text x="48" y="270" class="role" opacity="{op0}">[ {role} ]'
-        f'<animate attributeName="opacity" calcMode="discrete" '
-        f'values="{discrete(j, len(ROLES))}" dur="{ROLE_CYCLE}s" '
-        f'begin="0s" repeatCount="indefinite" fill="both"/></text>'
+        f'<text x="48" y="270" class="role" opacity="0">[ {role} ]'
+        f'<animate attributeName="opacity" values="{kv}" keyTimes="{kt}" '
+        f'dur="{ROLE_CYCLE}s" begin="0s" repeatCount="indefinite" fill="both"/></text>'
     )
 roles_svg = "\n      ".join(role_parts)
 
@@ -241,27 +257,9 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
     </pattern>
 
     <!-- video edge fade masks -->
-    <linearGradient id="fadeX" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0"    stop-color="#000"/>
-      <stop offset="0.10" stop-color="#fff"/>
-      <stop offset="0.90" stop-color="#fff"/>
-      <stop offset="1"    stop-color="#000"/>
-    </linearGradient>
-    <linearGradient id="fadeY" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0"    stop-color="#000"/>
-      <stop offset="0.08" stop-color="#fff"/>
-      <stop offset="0.92" stop-color="#fff"/>
-      <stop offset="1"    stop-color="#000"/>
-    </linearGradient>
-    <mask id="videoMask">
-      <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" fill="#fff"/>
-      <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" fill="url(#fadeX)"/>
-      <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" fill="url(#fadeY)"/>
-    </mask>
-
-    <!-- clip for scan line (keeps it inside video box) -->
+    <!-- clip for video box and scan line (keeps it inside rounded video box) -->
     <clipPath id="vclip">
-      <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}"/>
+      <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" rx="10"/>
     </clipPath>
 
     <!-- name reveal: black cover rect shrinks upward -->
@@ -382,9 +380,9 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
         stroke-width="1" opacity="0.2"/>
 
   <!-- ===== RIGHT COLUMN: VIDEO VIEWFINDER ===== -->
-  <g mask="url(#videoMask)">
-    {fallback_svg}
-    {frames_svg}
+  <!-- Animated GIF: loops automatically, GitHub renders these correctly in SVG -->
+  <g clip-path="url(#vclip)">
+    {gif_svg}
   </g>
 
   <!-- scan line -->
