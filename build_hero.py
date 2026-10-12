@@ -1,25 +1,15 @@
 #!/usr/bin/env python3
-"""Build a NEXT-LEVEL animated hero.svg — cinema-grade first impression.
-
-Upgrades vs v1:
-  - Larger card (900x430), bolder typography hierarchy
-  - RGB glitch flash on NAME every few seconds (SMIL offset + opacity burst)
-  - Twinkling particle star field behind the card content
-  - Scan-line sweep running continuously over the video
-  - Periodic full-card light-beam sweep (like a camera shutter)
-  - Animated border that breathes (opacity pulse + gradient shift)
-  - Tech tag chips row with staggered glow
-  - Bigger name (74px), tighter, more dramatic layout
-  - Vertical separator line between columns
-  - Better color balance and glow positioning
-
-GitHub-safe: CSS + SMIL only — no JS, nothing fetched at runtime.
-Static fallback: final frame + name + first role always visible.
+"""Build cinema-grade hero.svg with a 50/50 split:
+Left half:  Spacious, high-end editorial bio, typography, roles, pitch, chips, and mantra.
+Right half: Full-height, full-bleed video that seamlessly blends into the dark card canvas.
+            Plays smoothly 1 time on open, then holds the final portrait frame.
+            Zero blank space. Zero player chrome. Pure cinema.
 """
 import base64
 import glob
 import os
 import random
+import numpy as np
 from PIL import Image
 from fonts_def import FONTS_STYLE_ESCAPED
 
@@ -45,49 +35,59 @@ PITCH    = "I don't build websites. I solve the problems behind them."
 LOCATION = "Kathmandu, Nepal"
 TAGS     = ["React", "TypeScript", "Next.js", "Astro", "GSAP"]
 
-# ---- geometry
-W, H   = 900, 440
-VW, VH = 416, 234   # 16:9 cinematic video (Native 480x270 scaled with LANCZOS)
-VX, VY = 458, 103   # centered vertically in right panel
-SEP_X  = 444        # vertical separator between left text and right video
+# ---- geometry: 50 / 50 split
+W, H   = 900, 410
+VW, VH = 450, 410   # right half is filled 100% by the video (no blank borders!)
+VX, VY = 450, 0
+SEP_X  = 450
 
-LOOP = 5.0
-
-# ---- Build animated GIF from all 29 frames (GitHub renders animated GIFs in SVG <image> tags)
-# This replaces the broken discrete-opacity SMIL stack which GitHub Camo strips.
+# ---- Build seamless full-height video GIF from all 29 frames
 frames = sorted(glob.glob(os.path.join(FRAME_DIR, "h_*.jpg")))
 if not frames:
-    raise SystemExit("No frames found in assets/frames/ — run ffmpeg extract first.")
+    raise SystemExit("No frames found in assets/frames/ — check assets directory.")
 frames = frames[1:]  # skip frame 1 -> gives exactly 29 frames (h_002 to h_030)
 N = len(frames)
-selected = frames    # use all 29 frames for smooth cinema video
-gif_imgs = []
-for f in selected:
-    img = Image.open(f).convert("RGB")
-    img = img.resize((VW, VH), Image.LANCZOS)
-    gif_imgs.append(img.quantize(colors=96, method=Image.Quantize.MEDIANCUT, dither=1))
 
-dur_ms = int(LOOP * 1000 / len(selected))   # 5000ms / 29 frames = ~172ms per frame
+# Scale frames so height matches card height (410px), crop width to 450px centered on Santosh & neon sign
+scale = VH / 270.0               # 410 / 270 = 1.5185
+scaled_w = int(480 * scale)       # 728px
+x0 = 200                         # sweet spot: Santosh on left (x~50-180), Neon on right (x~220-410)
+fade_w = 45                      # soften left seam into card background #0d0e16
+bg_color = np.array([13, 14, 22], dtype=np.float32)
+ramp = np.linspace(0.0, 1.0, fade_w, endpoint=True).reshape((1, fade_w, 1))
+
+gif_imgs = []
+for f in frames:
+    im = Image.open(f).convert("RGB")
+    scaled = im.resize((scaled_w, VH), Image.LANCZOS)
+    cropped = scaled.crop((x0, 0, x0 + VW, VH))
+    arr = np.array(cropped, dtype=np.float32)
+    # Blend leftmost 45 pixels smoothly into #0d0e16
+    arr[:, :fade_w, :] = bg_color * (1.0 - ramp) + arr[:, :fade_w, :] * ramp
+    blended = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
+    gif_imgs.append(blended.quantize(colors=96, method=Image.Quantize.MEDIANCUT, dither=1))
+
+dur_ms = int(4600 / len(frames))   # ~158ms per frame, ~4.6s total playback
 gif_imgs[0].save(
     GIF_PATH, format="GIF", save_all=True,
     append_images=gif_imgs[1:],
     duration=dur_ms, optimize=True
-)  # Omit loop parameter so it plays 1 time on open, then holds final frame!
-print(f"built GIF: {len(selected)} frames, {dur_ms}ms each -> {os.path.getsize(GIF_PATH)//1024}KB")
+)  # Note: loop parameter omitted -> plays 1 time on load, then holds final frame!
 
 with open(GIF_PATH, "rb") as fh:
     gif_b64 = base64.b64encode(fh.read()).decode("ascii")
 
+print(f"built seamless full-bleed GIF: {len(frames)} frames, {dur_ms}ms each -> {os.path.getsize(GIF_PATH)//1024}KB")
 
-# ====== ANIMATED GIF (single <image> — GitHub renders animated GIFs natively) ===
-# Uses both href and xlink:href for universal SVG engine compatibility
+
+# ====== ANIMATED GIF EMBED (clipped to card's right corners) ==================
 gif_svg = (
     f'<image x="{VX}" y="{VY}" width="{VW}" height="{VH}" '
     f'href="data:image/gif;base64,{gif_b64}" xlink:href="data:image/gif;base64,{gif_b64}" '
-    f'preserveAspectRatio="xMidYMid slice"/>'
+    f'preserveAspectRatio="none"/>'
 )
 
-# ====== CYCLING ROLES (smooth crossfade with keyTimes, no calcMode="discrete") ==
+# ====== CYCLING ROLES (smooth crossfade, zero discrete pops) ==================
 ROLE_CYCLE = 8.0
 def make_role_anim(j, total_roles, total_dur):
     slot = total_dur / total_roles
@@ -111,13 +111,13 @@ role_parts = []
 for j, role in enumerate(ROLES):
     kt, kv = make_role_anim(j, len(ROLES), ROLE_CYCLE)
     role_parts.append(
-        f'<text x="48" y="270" class="role" opacity="0">[ {role} ]'
+        f'<text x="44" y="210" class="sans" font-size="19" font-weight="700" fill="{CYAN}" letter-spacing="0.8" opacity="0">[ {role} ]'
         f'<animate attributeName="opacity" values="{kv}" keyTimes="{kt}" '
         f'dur="{ROLE_CYCLE}s" begin="0s" repeatCount="indefinite" fill="both"/></text>'
     )
 roles_svg = "\n      ".join(role_parts)
 
-# ====== TECH TAG CHIPS ========================================================
+# ====== TECH TAG CHIPS (left column, perfectly fitted) ========================
 TAG_COLS = [CYAN, VIOLET, PINK, CYAN, VIOLET]
 tag_parts = []
 tx = 44
@@ -126,7 +126,7 @@ for i, tag in enumerate(TAGS):
     tw = int(16 + len(tag) * 8.0)
     delay = i * 0.45
     tag_parts.append(
-        f'<g transform="translate({tx},338)">'
+        f'<g transform="translate({tx},300)">'
         f'<rect width="{tw}" height="26" rx="13" fill="{col}" fill-opacity="0.10" '
         f'stroke="{col}" stroke-width="1.2">'
         f'<animate attributeName="stroke-opacity" values="0.35;1.0;0.35" '
@@ -139,16 +139,15 @@ for i, tag in enumerate(TAGS):
     tx += tw + 8
 tags_svg = "\n    ".join(tag_parts)
 
-# ====== TWINKLING PARTICLES ===================================================
+# ====== TWINKLING PARTICLES (kept in left column to avoid covering subject) ==
 rng = random.Random(7)
 particles = []
-# Keep them in the left column + background (x < VX-30) to not cover video
-for _ in range(26):
-    px = rng.uniform(15, W - 15)
+for _ in range(22):
+    px = rng.uniform(15, SEP_X - 25)
     py = rng.uniform(15, H - 15)
-    pr = rng.uniform(0.6, 2.0)
+    pr = rng.uniform(0.6, 1.8)
     col = rng.choice([CYAN, VIOLET, PINK, "#ffffff"])
-    dur = rng.uniform(2.2, 7.0)
+    dur = rng.uniform(2.5, 6.5)
     beg = rng.uniform(0.0, 5.0)
     peak = rng.uniform(0.12, 0.45)
     particles.append(
@@ -159,50 +158,9 @@ for _ in range(26):
     )
 particles_svg = "\n  ".join(particles)
 
-# ====== GLITCH BURSTS ON NAME =================================================
-# Two ghost copies of the name — one cyan shifted left, one pink shifted right.
-# They flash rapidly at t=2s, t=9s, t=17s (non-repeating begins look natural).
-# Use fill="freeze" so each burst stays gone between triggers.
-glitch_svg = f"""
-  <!-- glitch: cyan ghost -->
-  <g mask="url(#nameMask)">
-    <g>
-      <text x="43" y="216" class="sans" font-size="74" font-weight="800"
-            fill="{CYAN}" letter-spacing="2" opacity="0">{NAME}
-        <animate attributeName="opacity"
-                 values="0;0.7;0;0.6;0"
-                 keyTimes="0;0.1;0.35;0.6;1"
-                 dur="0.18s" begin="2.2s;9.2s;17.2s" fill="freeze"/>
-        <animateTransform attributeName="transform" type="translate" additive="sum"
-                 values="0,0;-4,1;0,0;-2,0;0,0"
-                 keyTimes="0;0.1;0.35;0.6;1"
-                 dur="0.18s" begin="2.2s;9.2s;17.2s" fill="freeze"/>
-      </text>
-    </g>
-  </g>
-  <!-- glitch: pink ghost -->
-  <g mask="url(#nameMask)">
-    <g>
-      <text x="49" y="216" class="sans" font-size="74" font-weight="800"
-            fill="{PINK}" letter-spacing="2" opacity="0">{NAME}
-        <animate attributeName="opacity"
-                 values="0;0.55;0;0.45;0"
-                 keyTimes="0;0.1;0.35;0.6;1"
-                 dur="0.15s" begin="2.28s;9.28s;17.28s" fill="freeze"/>
-        <animateTransform attributeName="transform" type="translate" additive="sum"
-                 values="0,0;4,-1;0,0;2,0;0,0"
-                 keyTimes="0;0.1;0.35;0.6;1"
-                 dur="0.15s" begin="2.28s;9.28s;17.28s" fill="freeze"/>
-      </text>
-    </g>
-  </g>"""
-
 # ====== FULL-CARD LIGHT BEAM ==================================================
-# A wide soft beam that sweeps left→right across the entire card at t=0.8s,
-# then again at t=10s, t=20s. Creates a cinematic shutter/lens-flare feel.
 beam_svg = f"""
-  <rect x="-120" y="0" width="180" height="{H}" fill="url(#beamGrad)" opacity="0"
-        rx="0">
+  <rect x="-140" y="0" width="180" height="{H}" fill="url(#beamGrad)" opacity="0">
     <animate attributeName="x" values="-180;{W+180}"
              dur="1.8s" begin="0.8s;10s;20s"
              calcMode="spline" keySplines="0.25 0 0.75 1" fill="freeze"/>
@@ -211,7 +169,7 @@ beam_svg = f"""
              dur="1.8s" begin="0.8s;10s;20s" fill="freeze"/>
   </rect>"""
 
-# ====== ASSEMBLE ==============================================================
+# ====== ASSEMBLE SVG ==========================================================
 svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      width="100%" viewBox="0 0 {W} {H}" role="img"
      aria-label="{NAME} — animated profile hero">
@@ -219,43 +177,44 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
     <!-- name gradient -->
     <linearGradient id="nameGrad" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0"   stop-color="{CYAN}"/>
-      <stop offset="0.4" stop-color="{VIOLET}"/>
+      <stop offset="0.45" stop-color="{VIOLET}"/>
       <stop offset="1"   stop-color="{PINK}"/>
     </linearGradient>
 
-    <!-- border hairline — pulses -->
+    <!-- border hairline — breathing pulse -->
     <linearGradient id="hairline" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0"   stop-color="{CYAN}"   stop-opacity="0.9"/>
       <stop offset="0.5" stop-color="{VIOLET}" stop-opacity="0.3"/>
       <stop offset="1"   stop-color="{PINK}"   stop-opacity="0.9"/>
     </linearGradient>
 
-    <!-- ambient glows -->
-    <radialGradient id="glowL" cx="0.25" cy="0.45" r="0.65">
+    <!-- ambient background glows -->
+    <radialGradient id="glowL" cx="0.2" cy="0.45" r="0.6">
       <stop offset="0" stop-color="{VIOLET}" stop-opacity="0.22"/>
       <stop offset="1" stop-color="{BG}"     stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glowR" cx="0.78" cy="0.5" r="0.55">
-      <stop offset="0" stop-color="{CYAN}" stop-opacity="0.14"/>
+    <radialGradient id="glowStudio" cx="0.75" cy="0.5" r="0.6">
+      <stop offset="0" stop-color="{CYAN}" stop-opacity="0.16"/>
+      <stop offset="0.6" stop-color="{VIOLET}" stop-opacity="0.06"/>
       <stop offset="1" stop-color="{BG}"   stop-opacity="0"/>
     </radialGradient>
 
-    <!-- dot texture -->
+    <!-- subtle dot texture on left canvas -->
     <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
       <circle cx="1.5" cy="1.5" r="1" fill="#ffffff" opacity="0.028"/>
     </pattern>
 
-    <!-- clip for video box (soft rounded corners) -->
-    <clipPath id="vclip">
-      <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" rx="14"/>
+    <!-- outer card clip (gives the full-bleed video perfect rounded corners) -->
+    <clipPath id="cardClip">
+      <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="19"/>
     </clipPath>
 
-    <!-- name reveal: black cover rect shrinks upward -->
+    <!-- name reveal: smooth height unveil -->
     <mask id="nameMask" maskUnits="userSpaceOnUse"
-          x="40" y="142" width="460" height="92">
-      <rect x="40" y="142" width="460" height="92" fill="#fff"/>
-      <rect x="40" y="142" width="460" height="0"  fill="#000">
-        <animate attributeName="height" values="92;0" dur="1.0s"
+          x="38" y="100" width="400" height="76">
+      <rect x="38" y="100" width="400" height="76" fill="#fff"/>
+      <rect x="38" y="100" width="400" height="0"  fill="#000">
+        <animate attributeName="height" values="76;0" dur="0.9s"
                  begin="0.25s" fill="both"
                  calcMode="spline" keySplines="0.16 1 0.3 1"/>
       </rect>
@@ -271,17 +230,22 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
 
     <style>
       {FONTS_STYLE_ESCAPED}
-      .role {{ font-size: 21px; font-weight: 700; fill: {CYAN}; letter-spacing: 1px; }}
     </style>
   </defs>
 
   <!-- ===== CARD SHELL ===== -->
   <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="20" fill="{BG}"/>
-  <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="20" fill="url(#dots)"/>
+  <rect x="1" y="1" width="{SEP_X}" height="{H-2}" rx="20" fill="url(#dots)"/>
   <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="20" fill="url(#glowL)"/>
-  <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="20" fill="url(#glowR)"/>
+  <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="20" fill="url(#glowStudio)"/>
 
-  <!-- animated breathing border -->
+  <!-- ===== RIGHT HALF: SEAMLESS FULL-BLEED VIDEO ===== -->
+  <!-- Plays smoothly 1 time on open, then holds final portrait frame -->
+  <g clip-path="url(#cardClip)">
+    {gif_svg}
+  </g>
+
+  <!-- animated breathing border around entire card -->
   <rect x="1.5" y="1.5" width="{W-3}" height="{H-3}" rx="19" fill="none"
         stroke="url(#hairline)" stroke-width="1.8">
     <animate attributeName="stroke-opacity" values="0.9;0.35;0.9"
@@ -298,39 +262,38 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
 
   <!-- status pill -->
   <g class="sans">
-    <rect x="48" y="46" width="226" height="30" rx="15"
-          fill="{CYAN}" fill-opacity="0.08" stroke="{CYAN}" stroke-opacity="0.45" stroke-width="1.1"/>
-    <circle cx="66" cy="61" r="5" fill="{CYAN}">
+    <rect x="44" y="34" width="206" height="28" rx="14"
+          fill="{CYAN}" fill-opacity="0.08" stroke="{CYAN}" stroke-opacity="0.4" stroke-width="1.1"/>
+    <circle cx="58" cy="48" r="4.5" fill="{CYAN}">
       <animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite"/>
-      <animate attributeName="r"       values="5;6.8;5" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="r"       values="4.5;6.0;4.5" dur="1.5s" repeatCount="indefinite"/>
     </circle>
-    <text x="80" y="66" font-size="13" fill="{CYAN}" letter-spacing="0.6" font-weight="500"
+    <text x="70" y="53" font-size="12" fill="{CYAN}" letter-spacing="0.5" font-weight="600"
           >open to collaborations</text>
   </g>
 
   <!-- intro line -->
-  <text x="48" y="122" class="mono" font-size="17" fill="{MUTED}" letter-spacing="2">
+  <text x="44" y="96" class="mono" font-size="15" fill="{MUTED}" letter-spacing="2">
     {INTRO}
     <animate attributeName="opacity" values="0;1" dur="0.5s" begin="0.1s" fill="both"/>
   </text>
-  <!-- blinking cursor (x adjusted for shorter 'I am' text) -->
-  <rect x="92" y="107" width="10" height="17" rx="1.5" fill="{CYAN}" opacity="0">
+  <!-- blinking cursor -->
+  <rect x="88" y="83" width="8" height="15" rx="1.5" fill="{CYAN}" opacity="0">
     <animate attributeName="opacity" values="0;0;0;0;0;1;0;1;0" keyTimes="0;0.3;0.4;0.5;0.6;0.65;0.75;0.85;1"
              dur="3.5s" begin="0.5s" fill="both"/>
     <animate attributeName="opacity" values="1;0;1" dur="0.9s" begin="3.5s" repeatCount="indefinite"/>
   </rect>
 
-  <!-- BIG gradient NAME -->
+  <!-- BIG gradient NAME (Single, pristine display title in Syne 800) -->
   <g mask="url(#nameMask)">
-    <text x="46" y="216" class="display" font-size="74" font-weight="800"
+    <text x="42" y="164" class="display" font-size="64" font-weight="800"
           fill="url(#nameGrad)" letter-spacing="2">{NAME}</text>
   </g>
-  <!-- name reveal: one-shot heartbeat pulse (cyan flash right after mask opens) -->
-  <rect x="42" y="144" width="380" height="80" fill="{CYAN}" rx="4" opacity="0">
-    <animate attributeName="opacity" values="0;0.10;0" keyTimes="0;0.5;1"
-             dur="0.55s" begin="1.35s" fill="freeze"/>
+  <!-- subtle cyan reveal pulse -->
+  <rect x="42" y="106" width="340" height="68" fill="{CYAN}" rx="4" opacity="0">
+    <animate attributeName="opacity" values="0;0.08;0" keyTimes="0;0.5;1"
+             dur="0.55s" begin="1.2s" fill="freeze"/>
   </rect>
-  {glitch_svg}
 
   <!-- cycling roles -->
   <g class="sans">
@@ -338,11 +301,12 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
   </g>
 
   <!-- pitch / tagline -->
-  <text x="48" y="300" class="sans" font-size="15" fill="{TEXT}" opacity="0.88">{PITCH}</text>
-  <!-- Sanskrit mantra — subtle, reverent, fades in late -->
-  <text x="48" y="318" class="mono" font-size="12" fill="{MUTED}" opacity="0" letter-spacing="1">
+  <text x="44" y="246" class="sans" font-size="13.5" font-weight="500" fill="{TEXT}" opacity="0.9">{PITCH}</text>
+
+  <!-- Sanskrit mantra -->
+  <text x="44" y="270" class="mono" font-size="12" fill="{MUTED}" opacity="0.7" letter-spacing="1">
     अनुगच्छतु प्रवाहं
-    <animate attributeName="opacity" values="0;0.55" dur="0.8s" begin="1.8s" fill="both"/>
+    <animate attributeName="opacity" values="0;0.7" dur="0.8s" begin="1.5s" fill="both"/>
   </text>
 
   <!-- tech tags -->
@@ -351,43 +315,21 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org
   </g>
 
   <!-- meta row -->
-  <g class="sans" font-size="13" fill="{MUTED}">
+  <g class="sans" font-size="12.5" fill="{MUTED}">
     <!-- pin icon -->
-    <path d="M52 384 c0-5 4-8.5 8.5-8.5 s8.5 3.5 8.5 8.5 c0 6-8.5 14-8.5 14 s-8.5-8-8.5-14z"
-          fill="none" stroke="{PINK}" stroke-width="1.5"/>
-    <circle cx="60.5" cy="384" r="2.5" fill="{PINK}"/>
-    <text x="76" y="388">{LOCATION}</text>
+    <path d="M48 358 c0-4.5 3.5-8 8-8 s8 3.5 8 8 c0 5.5-8 13-8 13 s-8-7.5-8-13z"
+          fill="none" stroke="{PINK}" stroke-width="1.4"/>
+    <circle cx="56" cy="358" r="2.2" fill="{PINK}"/>
+    <text x="70" y="362">{LOCATION}</text>
     <!-- flow icon -->
-    <path d="M196 377 l2.8 5.5 6.2 0.9-4.5 4.3 1.1 6.2-5.6-3.0-5.6 3.0 1.1-6.2-4.5-4.3 6.2-0.9z"
+    <path d="M192 352 l2.6 5.2 5.8 0.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-0.8z"
           fill="none" stroke="{CYAN}" stroke-width="1.3"/>
-    <text x="210" y="388">अनुगच्छतु प्रवाहं</text>
+    <text x="206" y="362">अनुगच्छतु प्रवाहं</text>
   </g>
 
-  <!-- vertical separator -->
-  <line x1="{SEP_X}" y1="36" x2="{SEP_X}" y2="{H-36}" stroke="url(#hairline)"
-        stroke-width="1" opacity="0.2"/>
-
-  <!-- ===== RIGHT COLUMN: CINEMATIC SHOWCASE ===== -->
-  <!-- Ambient glow behind video box -->
-  <radialGradient id="vGlow" cx="0.5" cy="0.5" r="0.5">
-    <stop offset="0" stop-color="{CYAN}" stop-opacity="0.22"/>
-    <stop offset="0.6" stop-color="{VIOLET}" stop-opacity="0.08"/>
-    <stop offset="1" stop-color="{BG}" stop-opacity="0"/>
-  </radialGradient>
-  <ellipse cx="{VX + VW//2}" cy="{VY + VH//2}" rx="{VW//2 + 35}" ry="{VH//2 + 30}" fill="url(#vGlow)"/>
-
-  <!-- Video frame card with sleek rounded border -->
-  <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" rx="14"
-        fill="{DARK}" stroke="url(#hairline)" stroke-width="1.6" stroke-opacity="0.6"/>
-
-  <!-- Animated video (plays 1 time on load, then holds final portrait frame) -->
-  <g clip-path="url(#vclip)">
-    {gif_svg}
-  </g>
-
-  <!-- Elegant subtle glass sheen over video border -->
-  <rect x="{VX}" y="{VY}" width="{VW}" height="{VH}" rx="14"
-        fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1"/>
+  <!-- subtle vertical separator between editorial bio and cinematic video -->
+  <line x1="{SEP_X}" y1="24" x2="{SEP_X}" y2="{H-24}" stroke="url(#hairline)"
+        stroke-width="1" opacity="0.14"/>
 
 </svg>
 '''
@@ -398,4 +340,4 @@ with open(OUT, "w", encoding="utf-8") as fh:
 
 size_kb = os.path.getsize(OUT) / 1024
 print(f"wrote {OUT}")
-print(f"frames={N}  loop={LOOP}s  size={size_kb:.0f} KB")
+print(f"frames={N}  size={size_kb:.0f} KB")
