@@ -11,8 +11,9 @@ import os
 from fonts_def import FONTS_STYLE_ESCAPED
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ICONS = json.load(open(os.path.join(HERE, "profile", "assets", "icons.json")))
-OUT = os.path.join(HERE, "profile", "stack.svg")
+icons_path = os.path.join(HERE, "assets", "icons.json") if os.path.exists(os.path.join(HERE, "assets", "icons.json")) else os.path.join(HERE, "profile", "assets", "icons.json")
+ICONS = json.load(open(icons_path))
+OUT = os.path.join(HERE, "stack.svg")
 
 BG, CYAN, VIOLET, PINK, TEXT, MUTED = "#0d0e16", "#22d3ee", "#a78bfa", "#f472b6", "#e7e9f3", "#8b90a8"
 W, H = 900, 470

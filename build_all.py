@@ -30,7 +30,7 @@ def main():
     total_time = time.time() - t0
     print("\n" + "=" * 60)
     print(f" ALL 5 SVGs BUILT CLEANLY in {total_time:.1f}s!")
-    print(" Preview file: profile/preview_full.html")
+    print(" Preview file: preview_full.html")
     print("=" * 60)
 
 if __name__ == "__main__":

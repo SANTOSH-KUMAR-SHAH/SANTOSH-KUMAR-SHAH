@@ -11,8 +11,9 @@ from PIL import Image
 from fonts_def import FONTS_STYLE_ESCAPED
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "profile", "id-dashboard.svg")
-REPOS = json.load(open(os.path.join(HERE, "profile", "assets", "repos.json")))
+repos_path = os.path.join(HERE, "assets", "repos.json") if os.path.exists(os.path.join(HERE, "assets", "repos.json")) else os.path.join(HERE, "profile", "assets", "repos.json")
+REPOS = json.load(open(repos_path))
+OUT = os.path.join(HERE, "id-dashboard.svg")
 
 BG, CYAN, VIOLET, PINK, TEXT, MUTED = "#0d0e16", "#22d3ee", "#a78bfa", "#f472b6", "#e7e9f3", "#8b90a8"
 W, H = 900, 470
@@ -26,7 +27,8 @@ lang = Counter(r["lang"] for r in REPOS if r["lang"])
 chart = lang.most_common(4)  # e.g. JavaScript, TypeScript, Astro
 
 # ---- inline downscaled portrait -------------------------------------------
-img = Image.open(os.path.join(HERE, "profile", "assets", "me.png")).convert("RGBA")
+me_path = os.path.join(HERE, "assets", "me.png") if os.path.exists(os.path.join(HERE, "assets", "me.png")) else os.path.join(HERE, "profile", "assets", "me.png")
+img = Image.open(me_path).convert("RGBA")
 img.thumbnail((300, 300))
 buf = io.BytesIO()
 img.save(buf, "PNG", optimize=True)

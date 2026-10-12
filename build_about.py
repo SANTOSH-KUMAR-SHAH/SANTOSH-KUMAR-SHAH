@@ -10,7 +10,7 @@ import os
 from fonts_def import FONTS_STYLE_ESCAPED
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT  = os.path.join(HERE, "profile", "about-life.svg")
+OUT  = os.path.join(HERE, "about-life.svg")
 
 BG, CYAN, VIOLET, PINK, TEXT, MUTED = "#0d0e16","#22d3ee","#a78bfa","#f472b6","#e7e9f3","#8b90a8"
 W, H = 900, 430

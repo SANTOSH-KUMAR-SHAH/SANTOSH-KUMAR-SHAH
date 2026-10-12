@@ -23,8 +23,8 @@ import random
 from fonts_def import FONTS_STYLE_ESCAPED
 
 HERE      = os.path.dirname(os.path.abspath(__file__))
-FRAME_DIR = os.path.join(HERE, "profile", "assets", "frames")
-OUT       = os.path.join(HERE, "profile", "hero.svg")
+FRAME_DIR = os.path.join(HERE, "assets", "frames") if os.path.exists(os.path.join(HERE, "assets", "frames")) else os.path.join(HERE, "profile", "assets", "frames")
+OUT       = os.path.join(HERE, "hero.svg")
 
 # ---- theme
 BG     = "#0d0e16"
